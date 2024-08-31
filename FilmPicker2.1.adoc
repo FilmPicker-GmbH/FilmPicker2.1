@@ -1,0 +1,95 @@
+= FilmPicker 2.1 
+
+== Ressources
+
+=== Film Item 
+
+[cols=4*,options=header]
+|===
+|Fieldname
+|Type
+|Format
+|Example
+
+|ID
+|String
+|
+|42
+
+|Title
+|String
+|String
+|The Matrix
+
+|LengthInMinutes
+|Number
+|int32
+|136
+
+|MoodType
+|Optional<string>
+|enum
+|Dark
+|===
+
+=== Error
+
+[cols=4*,options=header]
+|===
+|Fieldname
+|Type
+|Format
+|Example
+
+|Message
+|String
+|
+|Error Details
+|===
+
+== High-Level API Design
+
+[cols=6*,options=header]
+|===
+|Operation
+|Path
+|HTTP Method
+|Request Body
+|Successful Response 
+|Error Responses
+
+|List all films
+|/films
+|GET
+|-
+|200 OK
+|400 Bad Request
+
+|Add a film
+|/films
+|POST
+|Film Item
+|201 Created
+|400 Bad Request
+
+|Get a film
+|/films/{id}
+|GET
+|-
+|200 OK
+|400 Bad Request
+
+|Update a film
+|/films/{id}
+|PUT
+|Film Item
+|200 OK
+|400 Bad Request
+
+|Delete a film
+|/films/{id}
+|DELETE
+|-
+|204 No Content
+|400 Bad Request
+|===

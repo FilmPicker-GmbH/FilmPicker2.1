@@ -1,0 +1,285 @@
+openapi: 3.0.3
+info:
+  title: Films API
+  version: v1
+  description: |
+    This is a simple API for managing films.
+
+    We are going to create a CRUD API for films.
+
+    We will also cover the following topics:
+    * Result pagination
+    * Security (Authentication and Authorization)
+
+    We will use a simple **Film** model with the following fields:
+    * ID
+    * Title
+    * Length
+    * MoodType
+
+security:
+  - OAuthClientCredentials:
+      - films
+
+servers:
+  - url: http://localhost:3000
+    description: Local server
+
+tags:
+  - name: Films
+    description: The films API
+  - name: Film
+    description: The film API
+    
+paths:
+  /films:
+    get:
+      parameters:
+        - name: offset
+          in: query
+          description: The page offset
+          required: false
+          schema:
+            type: integer
+            default: 0
+          example: 10
+        - name: limit
+          in: query
+          description: The page limit
+          required: false
+          schema:
+            type: integer
+            default: 5
+          example: 5
+      tags:
+        - Films
+      summary: Get all films
+      operationId: getFilms
+      responses:
+        '200':
+          $ref: '#/components/responses/FilmsResponse'
+        '4XX':
+          $ref: '#/components/responses/ClientErrorResponse'
+        default:
+          $ref: '#/components/responses/UnexpectedErrorResponse'
+  
+  /films/{id}:
+    get:
+      tags:
+        - Film
+      summary: Get a film by ID
+      operationId: getFilm
+      parameters:
+        - name: id
+          in: path
+          description: The film ID
+          required: true
+          schema:
+            type: string
+          example: 42
+      responses:
+        '200':
+          $ref: '#/components/responses/FilmResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundErrorResponse'
+        '4XX':
+          $ref: '#/components/responses/ClientErrorResponse'
+        default:
+          $ref: '#/components/responses/UnexpectedErrorResponse'
+    
+    post:
+      tags:
+        - Film
+      summary: Add a film by ID
+      operationId: addFilm
+      parameters:
+        - name: id
+          in: path
+          description: The film ID
+          required: true
+          schema:
+            type: string
+          example: 42
+      requestBody:
+        $ref: '#/components/requestBodies/FilmRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/FilmResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundErrorResponse'
+        '4XX':
+          $ref: '#/components/responses/ClientErrorResponse'
+        default:
+          $ref: '#/components/responses/UnexpectedErrorResponse'
+
+    put:
+      tags:
+        - Film
+      summary: Update a film by ID
+      operationId: updateFilm
+      parameters:
+        - name: id
+          in: path
+          description: The film ID
+          required: true
+          schema:
+            type: string
+          example: 42
+      requestBody:
+        $ref: '#/components/requestBodies/FilmRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/FilmResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundErrorResponse'
+        '4XX':
+          $ref: '#/components/responses/ClientErrorResponse'
+        default:
+          $ref: '#/components/responses/UnexpectedErrorResponse'
+
+    delete:
+      tags:
+        - Film
+      summary: Delete a film by ID
+      operationId: deleteFilm
+      parameters:
+        - name: id
+          in: path
+          description: The film ID
+          required: true
+          schema:
+            type: string
+          example: 42
+      responses:
+        '204':
+          description: The film was deleted
+        '404':
+          $ref: '#/components/responses/NotFoundErrorResponse'
+        '4XX':
+          $ref: '#/components/responses/ClientErrorResponse'
+        default:
+          $ref: '#/components/responses/UnexpectedErrorResponse'
+components:
+  securitySchemes:
+    OAuthClientCredentials:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: http://localhost:3000/oauth/token
+          scopes:
+            films: Access to the films API
+  requestBodies:
+    FilmRequest:
+      description: The film details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Film'
+      required: true
+
+  responses:
+    FilmResponse:
+      description: The film details
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Film'
+
+    FilmsResponse:
+      description: The paginated list of films
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/PaginatedResult'
+              - type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Films'
+
+
+    ClientErrorResponse:
+      description: A client error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    UnexpectedErrorResponse:
+      description: An unexpected error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFoundErrorResponse:
+      description: A not found error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    PaginatedResult:
+      type: object
+      properties:
+        offset:
+          type: integer
+          description: The page offset
+          example: 10
+        limit:
+          type: integer
+          description: The page limit
+          example: 5
+        total:
+          type: integer
+          description: The total number of items
+          example: 420
+        data:
+          type: array
+          items: {}
+    Film:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The film ID
+          example: 42
+          readOnly: true
+        title:
+          type: string
+          description: The film title
+          example: The Shawshank Redemption
+        length:
+          type: number
+          description: The film length in minutes
+          format: int32
+          example: 142
+        moodType:
+          type: string
+          enum:
+            - LIGHT
+            - HEAVY
+            - WHOLESOME
+            - EXCITING
+          description: The film mood type
+          example: LIGHT, WHOLESOME
+      required:
+        - title
+        - length
+        - moodType
+    
+    Films:
+      type: array
+      items:
+        $ref: '#/components/schemas/Film'
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The error message
+          example: Film not found
+      required:
+        - message
