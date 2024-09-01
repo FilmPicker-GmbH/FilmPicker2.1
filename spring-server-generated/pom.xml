@@ -6,6 +6,9 @@
     <name>swagger-spring</name>
     <modules>
         <module>service</module>
+        <module>api</module>
+        <module>configuration</module>
+        <module>model</module>
     </modules>
     <version>1.0.0</version>
     <properties>
