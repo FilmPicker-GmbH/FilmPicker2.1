@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.io.IOException;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2024-08-31T15:00:15.128234763Z[GMT]")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2024-08-31T15:00:15.128234763Z[GMT]")
 @RestController
 public class FilmsApiController implements FilmsApi {
 
@@ -29,15 +29,14 @@ public class FilmsApiController implements FilmsApi {
 
     private final HttpServletRequest request;
 
-    @org.springframework.beans.factory.annotation.Autowired
     public FilmsApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
         this.request = request;
     }
 
     public ResponseEntity<Film> addFilm(
-            @Parameter(in = ParameterIn.PATH, description = "The film ID", required = true, schema = @Schema()) @PathVariable("id") String id
-            , @Parameter(in = ParameterIn.DEFAULT, description = "The film details", required = true, schema = @Schema()) @Valid @RequestBody Film body) {
+            @Parameter(in = ParameterIn.PATH, description = "The film ID", required = true, schema = @Schema(description = "Schema description for add film" )) @PathVariable String id
+            , @Parameter(in = ParameterIn.DEFAULT, description = "The film details", required = true, schema = @Schema(description = "Schema description for add film" )) @Valid @RequestBody Film body) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {
@@ -51,12 +50,12 @@ public class FilmsApiController implements FilmsApi {
         return new ResponseEntity<Film>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    public ResponseEntity<Void> deleteFilm(@Parameter(in = ParameterIn.PATH, description = "The film ID", required = true, schema = @Schema()) @PathVariable("id") String id) {
+    public ResponseEntity<Void> deleteFilm(@Parameter(in = ParameterIn.PATH, description = "The film ID", required = true, schema = @Schema(description = "Schema description for delete film" )) @PathVariable String id) {
         String accept = request.getHeader("Accept");
         return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    public ResponseEntity<Film> getFilm(@Parameter(in = ParameterIn.PATH, description = "The film ID", required = true, schema = @Schema()) @PathVariable("id") String id) {
+    public ResponseEntity<Film> getFilm(@Parameter(in = ParameterIn.PATH, description = "The film ID", required = true, schema = @Schema(description = "Schema description for get film" )) @PathVariable String id) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {
@@ -70,8 +69,8 @@ public class FilmsApiController implements FilmsApi {
         return new ResponseEntity<Film>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    public ResponseEntity<InlineResponse200> getFilms(@Parameter(in = ParameterIn.QUERY, description = "The page offset", schema = @Schema(defaultValue = "0")) @Valid @RequestParam(value = "offset", required = false, defaultValue = "0") Integer offset
-            , @Parameter(in = ParameterIn.QUERY, description = "The page limit", schema = @Schema(defaultValue = "5")) @Valid @RequestParam(value = "limit", required = false, defaultValue = "5") Integer limit) {
+    public ResponseEntity<InlineResponse200> getFilms(@Parameter(in = ParameterIn.QUERY, description = "The page offset", schema = @Schema(defaultValue = "0")) @Valid @RequestParam(required = false, defaultValue = "0") Integer offset
+            , @Parameter(in = ParameterIn.QUERY, description = "The page limit", schema = @Schema(defaultValue = "5")) @Valid @RequestParam(required = false, defaultValue = "5") Integer limit) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {
@@ -85,8 +84,8 @@ public class FilmsApiController implements FilmsApi {
         return new ResponseEntity<InlineResponse200>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    public ResponseEntity<Film> updateFilm(@Parameter(in = ParameterIn.PATH, description = "The film ID", required = true, schema = @Schema()) @PathVariable("id") String id
-            , @Parameter(in = ParameterIn.DEFAULT, description = "The film details", required = true, schema = @Schema()) @Valid @RequestBody Film body) {
+    public ResponseEntity<Film> updateFilm(@Parameter(in = ParameterIn.PATH, description = "The film ID", required = true, schema = @Schema(description = "Schema description for update film" )) @PathVariable String id
+            , @Parameter(in = ParameterIn.DEFAULT, description = "The film details", required = true, schema = @Schema(description = "Schema description for update film")) @Valid @RequestBody Film body) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {
