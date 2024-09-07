@@ -166,15 +166,13 @@ public class PaginatedResult   {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class PaginatedResult {\n");
-    
-    sb.append("    offset: ").append(toIndentedString(offset)).append("\n");
-    sb.append("    limit: ").append(toIndentedString(limit)).append("\n");
-    sb.append("    total: ").append(toIndentedString(total)).append("\n");
-    sb.append("    data: ").append(toIndentedString(data)).append("\n");
-    sb.append("}");
-    return sb.toString();
+
+      return "class PaginatedResult {\n" +
+              "    offset: " + toIndentedString(offset) + "\n" +
+              "    limit: " + toIndentedString(limit) + "\n" +
+              "    total: " + toIndentedString(total) + "\n" +
+              "    data: " + toIndentedString(data) + "\n" +
+              "}";
   }
 
   /**

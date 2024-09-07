@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.io.Serial;
+
 @SpringBootApplication
 @ComponentScan(basePackages = { "io.swagger", "io.swagger.api" , "io.swagger.configuration"})
 public class Swagger2SpringBoot implements CommandLineRunner {
@@ -42,7 +44,8 @@ public class Swagger2SpringBoot implements CommandLineRunner {
         }
     }
 
-    class ExitException extends RuntimeException implements ExitCodeGenerator {
+    static class ExitException extends RuntimeException implements ExitCodeGenerator {
+        @Serial
         private static final long serialVersionUID = 1L;
 
         @Override

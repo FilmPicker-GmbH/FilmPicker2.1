@@ -3,12 +3,14 @@ package io.swagger;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;
 
+import java.io.Serial;
 import java.text.FieldPosition;
 import java.util.Date;
 
 
 public class RFC3339DateFormat extends ISO8601DateFormat {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   // Same as ISO8601DateFormat but serializing milliseconds.

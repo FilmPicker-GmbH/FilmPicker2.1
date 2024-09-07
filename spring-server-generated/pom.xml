@@ -4,12 +4,7 @@
     <artifactId>swagger-spring</artifactId>
     <packaging>pom</packaging>
     <name>swagger-spring</name>
-    <modules>
-        <module>service</module>
-        <module>api</module>
-        <module>configuration</module>
-        <module>model</module>
-    </modules>
+
     <version>1.0.0</version>
     <properties>
         <java.version>21</java.version>
