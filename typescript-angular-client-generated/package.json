@@ -1,0 +1,35 @@
+{
+  "name": "typescript-angular-client-generated",
+  "version": "1.0.0",
+  "description": "init",
+  "main": "index.js",
+  "scripts": {
+    "test": "test-command"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pe42iqoq/FilmPicker2.1.git"
+  },
+  "keywords": [
+    "film"
+  ],
+  "author": "nam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pe42iqoq/FilmPicker2.1/issues"
+  },
+  "homepage": "https://github.com/pe42iqoq/FilmPicker2.1#readme",
+  "dependencies": {
+    "@angular/cli": "^18.2.4",
+    "@angular/common": "^18.2.4",
+    "@angular/compiler": "^18.2.4",
+    "@angular/core": "^18.2.4",
+    "@angular/platform-browser": "^18.2.4",
+    "@angular/platform-browser-dynamic": "^18.2.4",
+    "rxjs": "^7.8.1",
+    "rxjs-compat": "^6.6.7"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.2"
+  }
+}

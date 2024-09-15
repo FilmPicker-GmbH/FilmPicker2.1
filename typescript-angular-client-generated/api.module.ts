@@ -3,8 +3,8 @@ import { Configuration } from './configuration';
 import { HttpClient } from '@angular/common/http';
 
 
-import { FilmService } from './api/film.service';
-import { FilmsService } from './api/films.service';
+import { FilmService } from './frontend/src/app/api/film.service';
+import { FilmsService } from './frontend/src/app/api/films.service';
 
 @NgModule({
   imports:      [],
