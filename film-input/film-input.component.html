@@ -1,0 +1,37 @@
+<h2>Add a Film</h2>
+<form [formGroup]="filmForm" (ngSubmit)="addFilm()">
+  <div>
+    <label for="title">Title:</label>
+    <input id="title" formControlName="title" />
+    <div *ngIf="filmForm.get('title')?.invalid && filmForm.get('title')?.touched">
+      Title is required.
+    </div>
+  </div>
+
+  <div>
+    <label for="length">Length (minutes):</label>
+    <input id="length" formControlName="length" />
+    <div *ngIf="filmForm.get('length')?.invalid && filmForm.get('length')?.touched">
+      Please enter a valid number for the length.
+    </div>
+  </div>
+
+  <div>
+    <label for="mood">Mood:</label>
+    <input id="mood" formControlName="mood" />
+    <div *ngIf="filmForm.get('mood')?.invalid && filmForm.get('mood')?.touched">
+      Mood is required.
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="filmForm.invalid">Add Film</button>
+</form>
+
+<h2>Film List</h2>
+<ul>
+  <li *ngFor="let film of films">
+    {{ film.title }} ({{ film.length }} minutes) - {{ film.moodType }}
+    <button *ngIf="film.id" (click)="deleteFilm(film.id!)">Delete</button>
+  </li>
+</ul>
+

@@ -9,9 +9,9 @@
  * https://github.com/swagger-api/swagger-codegen.git
  * Do not edit the class manually.
  */
-import { Films } from './films';
+import { Film } from './film';
 import { PaginatedResult } from './paginatedResult';
 
 export interface InlineResponse200 extends PaginatedResult { 
-    data?: Films;
+    films: Film[];
 }

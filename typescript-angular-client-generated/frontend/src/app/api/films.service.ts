@@ -22,7 +22,7 @@ import { BASE_PATH, COLLECTION_FORMATS } from '../../../../variables';
 import { Configuration } from '../../../../configuration';
 
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class FilmsService {
 
     protected basePath = 'http://localhost:3000';

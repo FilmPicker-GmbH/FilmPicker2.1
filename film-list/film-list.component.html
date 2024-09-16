@@ -1,0 +1,26 @@
+<h2>Film List</h2>
+
+<!-- Films Table -->
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Length</th>
+      <th>Mood</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let film of films">
+      <td>{{ film.title }}</td>
+      <td>{{ film.length }} min</td>
+      <td>{{ film.moodType }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Pagination Controls -->
+<div class="pagination">
+  <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+  <span>Page {{ currentPage }}</span>
+  <button (click)="changePage(currentPage + 1)" [disabled]="currentPage * pageSize >= totalFilms">Next</button>
+</div>

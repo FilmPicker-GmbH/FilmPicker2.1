@@ -1,18 +1,12 @@
-import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core';
+import { NgModule, ModuleWithProviders} from '@angular/core';
 import { Configuration } from './configuration';
 import { HttpClient } from '@angular/common/http';
 
 
-import { FilmService } from './frontend/src/app/api/film.service';
-import { FilmsService } from './frontend/src/app/api/films.service';
-
 @NgModule({
   imports:      [],
   declarations: [],
-  exports:      [],
-  providers: [
-    FilmService,
-    FilmsService ]
+  exports:      []
 })
 export class ApiModule {
     public static forRoot(configurationFactory: () => Configuration): ModuleWithProviders<ApiModule> {
@@ -22,8 +16,7 @@ export class ApiModule {
         };
     }
 
-    constructor( @Optional() @SkipSelf() parentModule: ApiModule,
-                 @Optional() http: HttpClient) {
+    constructor( parentModule: ApiModule, http: HttpClient) {
         if (parentModule) {
             throw new Error('ApiModule is already loaded. Import in your base AppModule only.');
         }
