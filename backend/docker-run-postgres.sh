@@ -1,0 +1,1 @@
+docker run --name films_db -e POSTGRES_USER=myuser -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=films_db -p 5432:5432 -d postgres

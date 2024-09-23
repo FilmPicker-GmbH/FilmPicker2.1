@@ -19,7 +19,7 @@ import java.io.IOException;
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2024-08-31T15:00:15.128234763Z[GMT]")
 @RestController
 @RequestMapping("/films")
-@CrossOrigin(origins = "http://localhost:4200") // Allow CORS for this specific controller
+//@CrossOrigin(origins = "http://localhost:4200") // Allow CORS for this specific controller
 public class FilmsApiController implements FilmsApi {
 
     private static final Logger log = LoggerFactory.getLogger(FilmsApiController.class);
