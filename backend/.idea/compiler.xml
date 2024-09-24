@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="swagger-spring" />
+        <module name="spring" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="21">
@@ -23,6 +24,7 @@
       <module name="configuration" options="-parameters" />
       <module name="model" options="-parameters" />
       <module name="service" options="-parameters" />
+      <module name="spring" options="-parameters" />
       <module name="swagger-spring" options="-parameters" />
     </option>
   </component>
