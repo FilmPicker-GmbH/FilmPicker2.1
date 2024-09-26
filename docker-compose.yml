@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  films_db:
+    image: postgres
+    container_name: films_db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=films_db
+    ports:
+      -  5432:5432
+#  app:
+#    depends_on:
+#      - films_db
+#    build: ./backend
+#    env_file: ./.env
+#    container_name: films_app
+#    environment:
+#      - POSTGRES_USER=$DB_USER
+#      - POSTGRES_PASSWORD=$DB_PASS
+#      - POSTGRES_DB=$DB_NAME
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://films_db:5432/$DB_NAME
+#      - SPRING_DATASOURCE_USERNAME=$DB_USER
+#      - SPRING_DATASOURCE_PASSWORD=$DB_PASS
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#    ports:
+#      - "$SPRING_DOCKER_PORT:$SPRING_DOCKER_PORT"
+#    volumes:
+#      - .m2:/root/.m2
+#    stdin_open: true
+#    tty: true
