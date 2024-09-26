@@ -5,11 +5,13 @@ services:
     image: postgres
     container_name: films_db
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
       - POSTGRES_DB=films_db
     ports:
       -  5432:5432
+    volumes:
+      - db:/var/lib/postgres  
 #  app:
 #    depends_on:
 #      - films_db
@@ -30,3 +32,5 @@ services:
 #      - .m2:/root/.m2
 #    stdin_open: true
 #    tty: true
+volumes:
+  db:
