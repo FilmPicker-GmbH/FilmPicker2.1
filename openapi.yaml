@@ -63,7 +63,7 @@ paths:
         default:
           $ref: '#/components/responses/UnexpectedErrorResponse'
   
-  /films/{id}:
+  /film/{id}:
     get:
       tags:
         - Film

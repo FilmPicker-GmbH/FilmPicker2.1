@@ -43,7 +43,7 @@ public interface FilmsApi {
         @ApiResponse(responseCode = "4XX", description = "A client error response", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))),
         
         @ApiResponse(responseCode = "200", description = "An unexpected error response", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))) })
-    @PostMapping(value = "/films/{id}",
+    @PostMapping(value = "/film/{id}",
         produces = { "application/json" }, 
         consumes = { "application/json" })
     ResponseEntity<Film> addFilm(@Parameter(in = ParameterIn.PATH, description = "The film ID", required=true, schema=@Schema(description = "Add film by ID")) @PathVariable String id
@@ -62,7 +62,7 @@ public interface FilmsApi {
         @ApiResponse(responseCode = "4XX", description = "A client error response", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))),
         
         @ApiResponse(responseCode = "200", description = "An unexpected error response", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))) })
-    @DeleteMapping(value = "/films/{id}",
+    @DeleteMapping(value = "/film/{id}",
         produces = { "application/json" })
     ResponseEntity<Void> deleteFilm(@Parameter(in = ParameterIn.PATH, description = "The film ID", required=true, schema=@Schema(description = "Schema description for delete" )) @PathVariable String id
 );
@@ -79,7 +79,7 @@ public interface FilmsApi {
         @ApiResponse(responseCode = "4XX", description = "A client error response", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))),
         
         @ApiResponse(responseCode = "200", description = "An unexpected error response", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))) })
-    @GetMapping(value = "/films/{id}",
+    @GetMapping(value = "/film/{id}",
         produces = { "application/json" })
     ResponseEntity<Film> getFilm(@Parameter(in = ParameterIn.PATH, description = "The film ID", required=true, schema=@Schema(description = "Schema description for getFilm" )) @PathVariable String id
 );
@@ -112,7 +112,7 @@ public interface FilmsApi {
         @ApiResponse(responseCode = "4XX", description = "A client error response", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))),
         
         @ApiResponse(responseCode = "200", description = "An unexpected error response", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Error.class))) })
-    @PutMapping(value = "/films/{id}",
+    @PutMapping(value = "/film/{id}",
         produces = { "application/json" }, 
         consumes = { "application/json" })
     ResponseEntity<Film> updateFilm(@Parameter(in = ParameterIn.PATH, description = "The film ID", required=true, schema=@Schema(description = "Schema description for update film" )) @PathVariable String id
