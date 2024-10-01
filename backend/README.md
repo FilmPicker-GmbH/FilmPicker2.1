@@ -26,3 +26,6 @@ docker-compose up
 close
 
 docker-compose down
+
+
+Github integriert mit Jira check
