@@ -26,3 +26,6 @@ docker-compose up
 close
 
 docker-compose down
+
+
+Github should work now with
