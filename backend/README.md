@@ -28,4 +28,4 @@ close
 docker-compose down
 
 
-Github should work now with
+Github should work now with branch name as commit message
