@@ -28,4 +28,4 @@ close
 docker-compose down
 
 
-Github integriert mit Jira
+Github integriert mit Jira check
