@@ -26,3 +26,5 @@ docker-compose up
 close
 
 docker-compose down
+
+Github mit Jira funktioniert jetzt !
