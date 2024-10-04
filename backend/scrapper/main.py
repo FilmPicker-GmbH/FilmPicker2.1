@@ -29,7 +29,7 @@ class Scraper:
         img = ''.join(self._selector.xpath(self._table_path + "//td//img//@src"))
         if not self.meta.get(id_):
             self.meta[id_] = {}
-        self.meta[id_]['wiki_url'] = self._selector.xpath('//link[@rel="canonical"]/@href')[0]
+        self.meta[id_]['wikiUrl'] = self._selector.xpath('//link[@rel="canonical"]/@href')[0]
         if img:
             self.meta[id_]['poster'] = 'https:' + img
         return id_
@@ -84,7 +84,12 @@ class Scraper:
 
             else:
                 continue
-            self.meta[self._id][th] = td
+            self.meta[self.to_camel_case(self._id)][self.to_camel_case(th)] = td
+    
+    def to_camel_case(self, s):
+        words = s.split()
+        # Convert the first word to lowercase, capitalize the rest
+        return words[0].lower() + ''.join(word.capitalize() for word in words[1:])
 
     # def _extract_cast_data(self):
     #     noted = False
@@ -131,6 +136,7 @@ class Scraper:
         noted = False
         if self.meta.get(self._id, {}).get('casts'):
             del self.meta[self._id]['casts']
+        self.meta[self._id]['casts'] = []
         for kjn in self._selector.xpath('//*[@id="mw-content-text"]/div[1]')[0]:
             if "cast [ edit ]" in ' '.join([_ for _ in kjn.xpath(".//text()")]).lower():
                 noted = True
@@ -148,18 +154,18 @@ class Scraper:
                         cast_wiki_url = cast_wiki_url[0]
                     cast_id = cast_wiki_url.replace("/wiki/", '') if "/wiki/" in cast_wiki_url else chr_name
                     self.character[cast_id] = self.character.get(chr_name, {
-                        "wiki_url": ("https://en.wikipedia.org" + cast_wiki_url) if cast_wiki_url else "",
+                        "wikiUrl": ("https://en.wikipedia.org" + cast_wiki_url) if cast_wiki_url else "",
                         "name": chr_name, "movies": {}
                     })
                     self.character[cast_id]["movies"][self._id] = {
                         "role": chr_role,
                         "title": self._name
                     }
-                    self.meta[self._id]['casts'] = self.meta[self._id].get('casts', {})
-                    self.meta[self._id]['casts'][cast_id] = {
+                    #self.meta[self._id]['casts'] = self.meta[self._id].get('casts', {})
+                    self.meta[self._id]['casts'].append({
                         "name": chr_name,
                         "role": chr_role
-                    }
+                    })
                 break
 
     def _get_table(self):
