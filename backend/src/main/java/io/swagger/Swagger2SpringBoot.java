@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.mapping.List;
 import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,7 +22,7 @@ import com.fasterxml.jackson.databind.Module;
 
 import io.swagger.configuration.LocalDateConverter;
 import io.swagger.configuration.LocalDateTimeConverter;
-import io.swagger.model.ScrappedFilm;
+import io.swagger.entity.Film;
 import io.swagger.service.FilmService;
 import io.swagger.service.JsonToPojoService;
 
@@ -30,20 +31,32 @@ import io.swagger.service.JsonToPojoService;
 public class Swagger2SpringBoot implements CommandLineRunner {
 
     private static final Logger logger = LogManager.getLogger(Swagger2SpringBoot.class);
-    
-    @Autowired
-    private FilmService filmService;
 
     @Autowired
     private JsonToPojoService jtpService;
 
+    @Autowired
+    private FilmService filmService;
+
     @Override
     public void run(String... arg0) throws Exception {
         String jsonFilepath = "scrapper/movie_data.json";
-        ArrayList<ScrappedFilm> listOfFilms = jtpService.readJsonFile(jsonFilepath);
+        ArrayList<Film> listOfFilms = jtpService.readJsonFile(jsonFilepath);
+
+        /* 
         for(int i = 0; i < listOfFilms.size(); i++) {
             logger.info(listOfFilms.get(i).toString());
         }
+            */
+
+        filmService.addFilms((ArrayList<Film>)listOfFilms);
+        //filmService.addFilm(listOfFilms.get(0));
+
+        /* 
+        if(filmService.getAllFilms().size() == 0) {
+
+        }
+        */
         
         if (arg0.length > 0 && arg0[0].equals("exitcode")) {
             throw new ExitException();

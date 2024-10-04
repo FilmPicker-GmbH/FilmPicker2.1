@@ -13,11 +13,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.swagger.entity.Film;
 import io.swagger.model.ScrappedFilm;
 
 @Service
 public class JsonToPojoService {
-    public ArrayList<ScrappedFilm> readJsonFile(String filepath) throws StreamReadException, DatabindException, IOException {
+    public ArrayList<Film>readJsonFile(String filepath) throws StreamReadException, DatabindException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ArrayList<ScrappedFilm> listOfFilms = new ArrayList<ScrappedFilm>();
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream("movie_data.json");
@@ -31,6 +32,12 @@ public class JsonToPojoService {
         } catch (IOFileUploadException e) {
             e.printStackTrace();
         }
-        return listOfFilms;
+
+        return new ArrayList<Film>(listOfFilms.stream().map(film -> new Film(film)).toList());
+    }
+
+    public static int convertTimeToMinute(String timeString) {
+        String[] parts = timeString.split(" ");
+        return Integer.parseInt(parts[0]);
     }
 }

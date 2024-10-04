@@ -1,12 +1,14 @@
 package io.swagger.repository;
 
-import io.swagger.model.Film;
-
 import java.math.BigDecimal;
+import java.util.UUID;
+
+import io.swagger.types.MoodType;
 
 public record FilmDTO(
-        String id,
+        UUID id,
         String title,
-        BigDecimal length,
-        Film.MoodTypeEnum mood) {
+        BigDecimal lengthInMinutes,
+        MoodType mood,
+        String releaseYear) {
 }
