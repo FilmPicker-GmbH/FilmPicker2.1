@@ -73,7 +73,7 @@ class Scraper:
             elif th == "Budget" or th == "Box office":
                 td_ = re.search(r"(\d+.\d+)|(\d+)", og)
                 if td_:
-                    td = "₹" + td_.group()
+                    td = "$" + td_.group()
                 td_ = re.search(r"([clmb][a-z]+)", og, re.IGNORECASE)
                 if td_:
                     td = td + " " + td_.group()
@@ -210,8 +210,12 @@ if __name__ == "__main__":
     scraper = Scraper()
     for url in urls:
         scraper.decode_page(scraper.decode_url(url))
+    movie_data_list = []
+    if isinstance(scraper.meta, dict):
+        for key, movie_info in scraper.meta.items():
+            movie_data_list.append(movie_info)
     with open("movie_data.json", "w") as json_file:
-        json.dump(scraper.meta, json_file)
+        json.dump(movie_data_list, json_file)
     #print(scraper)
     print(scraper.meta)
     print(scraper.character)

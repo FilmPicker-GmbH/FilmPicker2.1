@@ -1,4 +1,4 @@
-package io.swagger.entity;
+package io.swagger.model;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package io.swagger.entity;
+package io.swagger.model;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import lombok.ToString;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -29,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "boxOffice",
         "casts"
 })
-
+@ToString
 public class ScrappedFilm {
 
     @JsonProperty("wikiUrl")
