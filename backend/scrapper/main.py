@@ -62,11 +62,11 @@ class Scraper:
                 continue
             th = th[0]
             og = td
-            if th == "Release date" or th == "Release dates":
+            if th.lower() == "release date" or th.lower() == "release dates":
                 td_ = re.search(r"\b(\d{1,2} [A-Z][a-z]+ \d{4})|(\d{4}-\d{2}-\d{2})|(20\d{2})|(19\d{2})\b", og)
                 if td_:
                     td = td_.group()
-            elif th == "Running time":
+            elif th.lower() == "running time":
                 td_ = re.search(r"\b(\d{1,3} [a-z]+)\b", og)
                 if td_:
                     td = td_.group()
@@ -84,6 +84,8 @@ class Scraper:
 
             else:
                 continue
+            if th.lower() == "release date" or th.lower() == "release dates":
+                th = "release date"
             self.meta[self.to_camel_case(self._id)][self.to_camel_case(th)] = td
     
     def to_camel_case(self, s):

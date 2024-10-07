@@ -58,7 +58,7 @@ public class Film {
         this.title = film.getName();
         this.lengthInMinutes = BigDecimal.valueOf(JsonToPojoService.convertTimeToMinute(film.getRunningTime()));
         //this.directors = film.getDirectedBy();
-        this.releaseYear = film.getReleaseDates();
+        this.releaseYear = film.getReleaseDate();
         //this.casts = film.getCasts();
     }
 

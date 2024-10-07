@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.mapping.List;
 import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -43,20 +42,14 @@ public class Swagger2SpringBoot implements CommandLineRunner {
         String jsonFilepath = "scrapper/movie_data.json";
         ArrayList<Film> listOfFilms = jtpService.readJsonFile(jsonFilepath);
 
-        /* 
+        // Debug modus
         for(int i = 0; i < listOfFilms.size(); i++) {
             logger.info(listOfFilms.get(i).toString());
         }
-            */
 
         filmService.addFilms((ArrayList<Film>)listOfFilms);
-        //filmService.addFilm(listOfFilms.get(0));
 
-        /* 
-        if(filmService.getAllFilms().size() == 0) {
-
-        }
-        */
+        logger.info("list length : ", listOfFilms.size());
         
         if (arg0.length > 0 && arg0[0].equals("exitcode")) {
             throw new ExitException();

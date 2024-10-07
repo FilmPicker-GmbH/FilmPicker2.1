@@ -3,6 +3,7 @@ package io.swagger.model;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -23,7 +24,7 @@ import lombok.ToString;
         "producedBy",
         "cinematography",
         "editedBy",
-        "releaseDates",
+        "releaseDate",
         "runningTime",
         "country",
         "language",
@@ -52,8 +53,8 @@ public class ScrappedFilm {
     private List<String> cinematography;
     @JsonProperty("editedBy")
     private List<String> editedBy;
-    @JsonProperty("releaseDates")
-    private String releaseDates;
+    @JsonProperty("releaseDate")
+    private String releaseDate;
     @JsonProperty("runningTime")
     private String runningTime;
     @JsonProperty("country")
@@ -159,14 +160,14 @@ public class ScrappedFilm {
         this.editedBy = editedBy;
     }
 
-    @JsonProperty("releaseDates")
-    public String getReleaseDates() {
-        return releaseDates;
+    @JsonProperty("releaseDate")
+    public String getReleaseDate() {
+        return releaseDate;
     }
 
-    @JsonProperty("releaseDates")
-    public void setReleaseDates(String releaseDates) {
-        this.releaseDates = releaseDates;
+    @JsonProperty("releaseDate")
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     @JsonProperty("runningTime")
