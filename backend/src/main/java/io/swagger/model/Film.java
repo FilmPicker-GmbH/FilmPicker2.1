@@ -1,14 +1,20 @@
 package io.swagger.model;
 
-import com.fasterxml.jackson.annotation.*;
-import io.swagger.configuration.NotUndefined;
-import io.swagger.v3.oas.annotations.media.Schema;
-import org.springframework.validation.annotation.Validated;
-
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Objects;
+
+import org.springframework.validation.annotation.Validated;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
+
+import io.swagger.configuration.NotUndefined;
+import io.swagger.types.MoodType;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Film
@@ -36,41 +42,8 @@ public class Film   {
   /**
    * The film mood type
    */
-  public enum MoodTypeEnum {
-    LIGHT("LIGHT"),
-    
-    HEAVY("HEAVY"),
-    
-    WHOLESOME("WHOLESOME"),
-    
-    EXCITING("EXCITING");
-
-    private String value;
-
-    MoodTypeEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    @JsonCreator
-    public static MoodTypeEnum fromValue(String text) {
-      for (MoodTypeEnum b : MoodTypeEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
   @JsonProperty("moodType")
-
-  private MoodTypeEnum moodType = null;
-
+  private MoodType moodType = null;
 
   public Film id(String id) { 
 
@@ -88,8 +61,6 @@ public class Film   {
   public String getId() {  
     return id;
   }
-
-
 
   public void setId(String id) { 
     this.id = id;
@@ -146,7 +117,7 @@ public class Film   {
     this.length = length;
   }
 
-  public Film moodType(MoodTypeEnum moodType) { 
+  public Film moodType(MoodType moodType) { 
 
     this.moodType = moodType;
     return this;
@@ -160,13 +131,13 @@ public class Film   {
   @Schema(example = "LIGHT, WHOLESOME", required = true, description = "The film mood type")
   
   @NotNull
-  public MoodTypeEnum getMoodType() {  
+  public MoodType getMoodType() {  
     return moodType;
   }
 
 
 
-  public void setMoodType(MoodTypeEnum moodType) {
+  public void setMoodType(MoodType moodType) {
     this.moodType = moodType;
   }
 
