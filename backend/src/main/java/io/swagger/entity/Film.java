@@ -1,11 +1,9 @@
 package io.swagger.entity;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import io.swagger.converter.MoodTypeConverter;
 import io.swagger.model.ScrappedFilm;
-import io.swagger.service.JsonToPojoService;
 import io.swagger.types.MoodType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -15,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -23,6 +22,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Film {
 
     @Id
@@ -34,7 +34,7 @@ public class Film {
     private String title;
 
     @Column(name = "lengthInMinutes", nullable = false)
-    private BigDecimal lengthInMinutes;
+    private int lengthInMinutes;
 
     /* 
     @ElementCollection
@@ -56,7 +56,7 @@ public class Film {
     public Film(ScrappedFilm film) {
         this.id = UUID.randomUUID();
         this.title = film.getName();
-        this.lengthInMinutes = BigDecimal.valueOf(JsonToPojoService.convertTimeToMinute(film.getRunningTime()));
+        this.lengthInMinutes = Integer.parseInt(film.getRunningTime());
         //this.directors = film.getDirectedBy();
         this.releaseYear = film.getReleaseDate();
         //this.casts = film.getCasts();
@@ -80,11 +80,11 @@ public class Film {
         this.title = title;
     }
 
-    public BigDecimal getLengthInMinutes() {
+    public int getLengthInMinutes() {
         return lengthInMinutes;
     }
 
-    public void setLengthInMinutes(BigDecimal lengthInMinutes) {
+    public void setLengthInMinutes(int lengthInMinutes) {
         this.lengthInMinutes = lengthInMinutes;
     }
 

@@ -1,6 +1,8 @@
 package io.swagger.service;
 
+import java.nio.file.NoSuchFileException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import io.swagger.entity.Film;
 import io.swagger.repository.FilmDTO;
 import io.swagger.repository.FilmRepository;
+import jakarta.persistence.EntityExistsException;
 
 @Service
 public class FilmService {
@@ -23,7 +26,7 @@ public class FilmService {
     public List<Film> getAllFilms() {
         Iterable<Film> films = filmRepository.findAll();
         return StreamSupport.stream(films.spliterator(), false)
-                            .collect(Collectors.toList());//films.stream().map(this::convertToDTO).collect(Collectors.toList());
+                            .collect(Collectors.toList());
     }
 
     public void addFilms(List<Film> films) {
@@ -31,42 +34,30 @@ public class FilmService {
     }
 
     // Get a film by ID
-    public FilmDTO getFilmById(UUID id) {
-        var filmId = filmRepository.findById(id);
-        if (filmId.equals(null)) {
-            throw new RuntimeException("Film not found");
-        }
+    public FilmDTO getFilmById(UUID id) throws NoSuchFileException {
+        Optional<Film> filmId = filmRepository.findById(id);
         if (filmId.isPresent()) {
             return convertToDTO(filmId.get());
         }
-        return null;
+            
+        throw new NoSuchElementException("Film not found");
     }
 
     // Add a new film
     public FilmDTO addFilm(Film f) {
-        FilmDTO filmDTO = convertToDTO(f);
-        Film film = convertToEntity(filmDTO);
-        Film savedFilm = filmRepository.save(film);
+        if (filmRepository.existsById(f.getId())) {
+            throw new EntityExistsException("Film already exist");
+        }
+        Film savedFilm = filmRepository.save(f);
         return convertToDTO(savedFilm);
     }
 
     // Update a film
-    public Film updateFilm(UUID id, Film f) {
-        FilmDTO filmDTO = convertToDTO(f);
-        Optional<Film> film = filmRepository.findById(id);
-
-        if (film.isEmpty()) {
-            throw new RuntimeException("Film not found");
+    public Film updateFilm(Film film) {
+        if (!filmRepository.existsById(film.getId())) {
+            throw new NoSuchElementException("Film not found");
         }
-
-        Film curFilm = film.get();
-
-        // Update the entity with new values from the DTO
-        curFilm.setTitle(filmDTO.title());
-        curFilm.setMoodType(filmDTO.mood());
-        curFilm.setLengthInMinutes(filmDTO.lengthInMinutes());
-
-        Film updatedFilm = filmRepository.save(curFilm);
+        Film updatedFilm = filmRepository.save(film);
         return updatedFilm;
     }
 
@@ -75,7 +66,7 @@ public class FilmService {
         if (filmRepository.existsById(id)) {
             filmRepository.deleteById(id);
         } else {
-            throw new RuntimeException("Film not found");
+            throw new NoSuchElementException("Film not found");
         }
     }
 
