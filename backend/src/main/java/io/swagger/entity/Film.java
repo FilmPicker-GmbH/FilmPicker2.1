@@ -8,12 +8,10 @@ import io.swagger.types.MoodType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -23,12 +21,15 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Film {
+@EqualsAndHashCode(callSuper = true)
+public class Film extends BaseEntity<UUID> {
 
-    @Id
-    @Column(name = "id", nullable = false, length = 255)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    public Film(Film toBeCopy) {
+        setId(toBeCopy.getId());
+        this.title = toBeCopy.getTitle();
+        this.lengthInMinutes = toBeCopy.getLengthInMinutes();
+        this.moodType = toBeCopy.getMoodType();
+    }
 
     @Column(name = "title", nullable = false, length = 255)
     private String title;
@@ -36,41 +37,36 @@ public class Film {
     @Column(name = "lengthInMinutes", nullable = false)
     private int lengthInMinutes;
 
-    /* 
-    @ElementCollection
-    @Column(name="director", nullable = false)
-    private List<String> directors;
-    */
+    /*
+     * @ElementCollection
+     * 
+     * @Column(name="director", nullable = false)
+     * private List<String> directors;
+     */
 
-    @Column(name="releaseYear", nullable = true)
+    @Column(name = "releaseYear", nullable = true)
     private String releaseYear;
 
     @Convert(converter = MoodTypeConverter.class)
     @Column(name = "moodType", nullable = true, length = 255)
     private MoodType moodType;
 
-   /*  @ManyToMany
-    @Column(name = "casts", nullable = false)
-    private List<Cast> casts;
-*/
+    /*
+     * @ManyToMany
+     * 
+     * @Column(name = "casts", nullable = false)
+     * private List<Cast> casts;
+     */
     public Film(ScrappedFilm film) {
-        this.id = UUID.randomUUID();
+        this.setId(UUID.randomUUID());
         this.title = film.getName();
         this.lengthInMinutes = Integer.parseInt(film.getRunningTime());
-        //this.directors = film.getDirectedBy();
+        // this.directors = film.getDirectedBy();
         this.releaseYear = film.getReleaseDate();
-        //this.casts = film.getCasts();
+        // this.casts = film.getCasts();
     }
 
     // Getters and Setters
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;

@@ -26,7 +26,7 @@ public class FilmService {
     public List<Film> getAllFilms() {
         Iterable<Film> films = filmRepository.findAll();
         return StreamSupport.stream(films.spliterator(), false)
-                            .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     public void addFilms(List<Film> films) {
@@ -34,22 +34,22 @@ public class FilmService {
     }
 
     // Get a film by ID
-    public FilmDTO getFilmById(UUID id) throws NoSuchFileException {
+    public Film getFilmById(UUID id) throws NoSuchFileException {
         Optional<Film> filmId = filmRepository.findById(id);
         if (filmId.isPresent()) {
-            return convertToDTO(filmId.get());
+            return filmId.get();
         }
-            
+
         throw new NoSuchElementException("Film not found");
     }
 
     // Add a new film
-    public FilmDTO addFilm(Film f) {
+    public Film addFilm(Film f) {
         if (filmRepository.existsById(f.getId())) {
             throw new EntityExistsException("Film already exist");
         }
         Film savedFilm = filmRepository.save(f);
-        return convertToDTO(savedFilm);
+        return savedFilm;
     }
 
     // Update a film
@@ -72,7 +72,8 @@ public class FilmService {
 
     // Conversion methods between Film and FilmDTO
     private FilmDTO convertToDTO(Film film) {
-        return new FilmDTO(film.getId(), film.getTitle(), film.getLengthInMinutes(), film.getMoodType(), film.getReleaseYear());
+        return new FilmDTO(film.getId(), film.getTitle(), film.getLengthInMinutes(), film.getMoodType(),
+                film.getReleaseYear());
     }
 
     private Film convertToEntity(FilmDTO filmDTO) {

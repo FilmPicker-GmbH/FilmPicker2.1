@@ -3,13 +3,12 @@ package io.swagger.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
+import java.nio.file.NoSuchFileException;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.Random;
 import java.util.UUID;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,20 +18,14 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import io.swagger.MockHelper;
 import io.swagger.entity.Film;
-import io.swagger.repository.FilmDTO;
+import io.swagger.mockrepository.MockRepository;
 import io.swagger.repository.FilmRepository;
 import jakarta.persistence.EntityExistsException;
 
 @ExtendWith(MockitoExtension.class)
 public class TestFilmService {
-
-    private List<Film> mockFilmDB;
-    private int maxFilmLength = 200;
-    private int minFilmLength = 50;
-    private int minYear = 1990;
-    private int maxYear = 2024;
-    private int movieCount = 15;
 
     @InjectMocks
     FilmService filmServiceMock;
@@ -40,63 +33,115 @@ public class TestFilmService {
     @Mock
     FilmRepository filmRepositoryMock;
 
-    private Film mockDataBuilder(String title) {
-        int randLength = (int)(Math.random() * (maxFilmLength - minFilmLength + 1) + minFilmLength);
-        String randYear = String.valueOf((int)(Math.random() * (maxYear - minYear + 1) + minYear));
-        return Film.builder().id(UUID.randomUUID()).lengthInMinutes(randLength).releaseYear(randYear)
-                .title(title).build();
-    }
+    MockRepository<Film, UUID> mockRepository;
+
+    UUID mockUUID1 = UUID.fromString("47cdcd3f-405a-4b84-b340-58a0b5a234a7");
+    UUID mockUUID2 = UUID.fromString("93216a10-0370-4541-8533-462c2cb18dc1");
+    UUID mockUUID3 = UUID.fromString("9171ab44-5089-44c4-a144-e79d7f5acef9");
 
     @BeforeEach
     public void init() {
+        mockRepository = new MockRepository<>();
         MockitoAnnotations.openMocks(this);
-        mockFilmDB = new ArrayList<Film>();
-        for (int i = 0; i < movieCount; i++) {
+        MockHelper.setupMockRepository(filmRepositoryMock, mockRepository);
+    }
 
-            mockFilmDB.add(mockDataBuilder(String.valueOf(i)));
-        }
+    @AfterEach
+    public void cleanUp() {
+        mockRepository.clear();
+    }
+
+    private List<Film> createListOfFilms() {
+        Film mockFilm1 = new Film();
+        mockFilm1.setId(mockUUID1);
+        mockFilm1.setTitle("Prisoner of my Heart");
+        mockFilm1.setLengthInMinutes(113);
+        mockFilm1.setReleaseYear("2005");
+
+        Film mockFilm2 = new Film();
+        mockFilm2.setId(mockUUID2);
+        mockFilm2.setTitle("Avenger: Finite War");
+        mockFilm2.setLengthInMinutes(210);
+        mockFilm2.setReleaseYear("2022");
+
+        Film mockFilm3 = new Film();
+        mockFilm3.setId(mockUUID3);
+        mockFilm3.setTitle("Apfel: Steve Arbeit");
+        mockFilm3.setLengthInMinutes(95);
+        mockFilm3.setReleaseYear("2015");
+
+        return List.of(mockFilm1, mockFilm2, mockFilm3);
+    }
+
+    @Test
+    public void testWhenCreateNewMockList_ThenReturnList() {
+        List<Film> createdListMock = createListOfFilms();
+
+        Film mockFilm1 = new Film();
+        mockFilm1.setId(mockUUID1);
+        mockFilm1.setTitle("Prisoner of my Heart");
+        mockFilm1.setLengthInMinutes(113);
+        mockFilm1.setReleaseYear("2005");
+
+        Film mockFilm2 = new Film();
+        mockFilm2.setId(mockUUID2);
+        mockFilm2.setTitle("Avenger: Finite War");
+        mockFilm2.setLengthInMinutes(210);
+        mockFilm2.setReleaseYear("2022");
+
+        Film mockFilm3 = new Film();
+        mockFilm3.setId(mockUUID3);
+        mockFilm3.setTitle("Apfel: Steve Arbeit");
+        mockFilm3.setLengthInMinutes(95);
+        mockFilm3.setReleaseYear("2015");
+
+        assertEquals(3, createdListMock.size());
+        assertArrayEquals(List.of(mockFilm1, mockFilm2, mockFilm3).toArray(), createdListMock.toArray());
     }
 
     @Test
     public void testWhenAddAll() {
-            when(this.filmRepositoryMock.saveAll(Mockito.<Film>anyList())).thenReturn(mockFilmDB);
+        List<Film> createdListMock = createListOfFilms();
+        filmServiceMock.addFilms(createdListMock);
 
-            filmServiceMock.addFilms(mockFilmDB);
-
-            verify(filmRepositoryMock, Mockito.times(1)).saveAll(Mockito.<Film>anyList());
+        verify(filmRepositoryMock, Mockito.times(1)).saveAll(createdListMock);
+        assertEquals(3, mockRepository.size());
     }
 
     @Test
     public void testWhenGetAllFilms_ThenReturnAll() {
-        when(this.filmRepositoryMock.findAll()).thenReturn(mockFilmDB);
-
         List<Film> result = filmServiceMock.getAllFilms();
 
         verify(filmRepositoryMock, Mockito.times(1)).findAll();
-        assertEquals(15, result.size());
-        assertArrayEquals(mockFilmDB.toArray(), result.toArray());
+        assertEquals(0, result.size());
+
+        List<Film> createdListMock = createListOfFilms();
+        filmServiceMock.addFilms(createdListMock);
+
+        List<Film> resultWithFilms = filmServiceMock.getAllFilms();
+
+        verify(filmRepositoryMock, Mockito.times(2)).findAll();
+        assertEquals(3, resultWithFilms.size());
+        assertArrayEquals(createdListMock.toArray(), resultWithFilms.toArray());
     }
 
+    // Change
     @Test
-    public void testWhenGetFilmById_ThenFlow() {
-        Film randFilmMock = mockFilmDB.get(new Random().nextInt(movieCount));
-        UUID id = randFilmMock.getId();
-        when(this.filmRepositoryMock.findById(Mockito.any(UUID.class))).thenReturn(Optional.of(randFilmMock));
+    public void testWhenGetFilmById_ThenFlow() throws NoSuchFileException {
+        List<Film> createdListMock = createListOfFilms();
+        filmServiceMock.addFilms(createdListMock);
 
-        try {
-            FilmDTO result = filmServiceMock.getFilmById(id);
-            verify(filmRepositoryMock, Mockito.times(1)).findById(id);
-            assertNotNull(result);
-        } catch (Exception e) {
-            
-        }
+        Film result = filmServiceMock.getFilmById(mockUUID1);
+
+        verify(filmRepositoryMock, Mockito.times(1)).findById(mockUUID1);
+        assertEquals(createdListMock.get(0), result);
     }
 
+    // exception name to result
     @Test
     public void testWhenGetFilmByIdButIDNotExist_ThenThrow() {
-        when(filmRepositoryMock.findById(Mockito.any(UUID.class))).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(NoSuchElementException.class, () -> filmServiceMock.getFilmById(UUID.randomUUID()));
+        Exception exception = assertThrows(NoSuchElementException.class,
+                () -> filmServiceMock.getFilmById(UUID.randomUUID()));
         String expected = "Film not found";
         String actual = exception.getMessage();
 
@@ -105,83 +150,107 @@ public class TestFilmService {
 
     @Test
     public void testWhenAddFilm_ThenFlow() {
-        Film randFilmMock = mockFilmDB.get(new Random().nextInt(movieCount));
-        when(filmRepositoryMock.existsById(Mockito.any(UUID.class))).thenReturn(false);
-        when(filmRepositoryMock.save(Mockito.any(Film.class))).thenReturn(randFilmMock);
+        Film filmMock = new Film();
+        filmMock.setId(mockUUID1);
+        filmMock.setTitle("Test: The Test");
+        filmMock.setLengthInMinutes(123);
+        filmMock.setReleaseYear("1234");
 
-        filmServiceMock.addFilm(randFilmMock);
+        Film result = filmServiceMock.addFilm(filmMock);
 
-        verify(filmRepositoryMock, Mockito.times(1)).existsById(randFilmMock.getId());
-        verify(filmRepositoryMock, Mockito.times(1)).save(randFilmMock);
+        verify(filmRepositoryMock, Mockito.times(1)).existsById(filmMock.getId());
+        verify(filmRepositoryMock, Mockito.times(1)).save(filmMock);
+        assertEquals(filmMock, result);
+        assertEquals(1, mockRepository.size());
     }
 
     @Test
     public void testWhenAddFilmAlreadyExist_ThenThrowError() {
-        Film randFilmMock = mockFilmDB.get(new Random().nextInt(movieCount));
-        when(filmRepositoryMock.existsById(Mockito.any(UUID.class))).thenReturn(true);
+        Film filmMock = new Film();
+        filmMock.setId(mockUUID1);
+        filmMock.setTitle("Test: The Test");
+        filmMock.setLengthInMinutes(123);
+        filmMock.setReleaseYear("1234");
 
-        Exception exception = assertThrows(EntityExistsException.class, () -> filmServiceMock.addFilm(randFilmMock));
+        filmServiceMock.addFilm(filmMock);
+
+        Exception exception = assertThrows(EntityExistsException.class, () -> filmServiceMock.addFilm(filmMock));
         String expected = "Film already exist";
         String actual = exception.getMessage();
 
         assertEquals(expected, actual);
 
-        verify(filmRepositoryMock, Mockito.times(1)).existsById(randFilmMock.getId());
-        verify(filmRepositoryMock, Mockito.times(0)).save(randFilmMock);
+        verify(filmRepositoryMock, Mockito.times(2)).existsById(filmMock.getId());
+        verify(filmRepositoryMock, Mockito.times(1)).save(filmMock);
     }
 
     @Test
     public void testWhenUpdateFilm_ThenFlow() {
-        Film randFilmMock = mockFilmDB.get(new Random().nextInt(movieCount));
-        when(filmRepositoryMock.existsById(Mockito.any(UUID.class))).thenReturn(true);
-        when(filmRepositoryMock.save(Mockito.any(Film.class))).thenReturn(randFilmMock);
+        List<Film> createdListMock = createListOfFilms();
+        filmServiceMock.addFilms(createdListMock);
 
-        filmServiceMock.updateFilm(randFilmMock);
+        Film mockEditedFilm = new Film(createdListMock.get(1));
+        mockEditedFilm.setReleaseYear("1999");
+        mockEditedFilm.setTitle("Avenger: NaN War");
 
-        verify(filmRepositoryMock, Mockito.times(1)).existsById(randFilmMock.getId());
-        verify(filmRepositoryMock, Mockito.times(1)).save(randFilmMock);
+        filmServiceMock.updateFilm(mockEditedFilm);
+
+        verify(filmRepositoryMock, Mockito.times(1)).existsById(mockEditedFilm.getId());
+        verify(filmRepositoryMock, Mockito.times(1)).save(mockEditedFilm);
+
+        assertNotEquals(createdListMock.get(1), mockEditedFilm);
+
+        List<Film> allFilmResult = filmServiceMock.getAllFilms();
+
+        assertEquals(mockEditedFilm, allFilmResult.get(1));
     }
 
     @Test
     public void testWhenUpdateFilmButIDNotExist_ThenThrowError() {
-        Film randFilmMock = mockFilmDB.get(new Random().nextInt(movieCount));
-        when(filmRepositoryMock.existsById(Mockito.any(UUID.class))).thenReturn(false);
+        Film filmMock = new Film();
+        filmMock.setId(mockUUID1);
+        filmMock.setTitle("Test: The Test");
+        filmMock.setLengthInMinutes(123);
+        filmMock.setReleaseYear("1234");
 
-        Exception exception = assertThrows(NoSuchElementException.class, () -> filmServiceMock.updateFilm(randFilmMock));
+        Exception exception = assertThrows(NoSuchElementException.class,
+                () -> filmServiceMock.updateFilm(filmMock));
         String expected = "Film not found";
         String actual = exception.getMessage();
 
         assertEquals(expected, actual);
 
-        verify(filmRepositoryMock, Mockito.times(1)).existsById(randFilmMock.getId());
-        verify(filmRepositoryMock, Mockito.times(0)).save(randFilmMock);
+        verify(filmRepositoryMock, Mockito.times(1)).existsById(filmMock.getId());
+        verify(filmRepositoryMock, Mockito.times(0)).save(filmMock);
     }
 
     @Test
     public void testWhenDeleteFilm_ThenFlow() {
-        Film randFilmMock = mockFilmDB.get(new Random().nextInt(movieCount));
-        when(filmRepositoryMock.existsById(Mockito.any(UUID.class))).thenReturn(true);
-        doNothing().when(filmRepositoryMock).deleteById(randFilmMock.getId());
+        List<Film> createdListMock = createListOfFilms();
+        filmServiceMock.addFilms(createdListMock);
 
-        filmServiceMock.deleteFilm(randFilmMock.getId());
+        Film toBeDeletedMock = createdListMock.get(2);
 
-        verify(filmRepositoryMock, Mockito.times(1)).existsById(randFilmMock.getId());
-        verify(filmRepositoryMock, Mockito.times(1)).deleteById(randFilmMock.getId());
+        filmServiceMock.deleteFilm(toBeDeletedMock.getId());
+
+        verify(filmRepositoryMock, Mockito.times(1)).existsById(toBeDeletedMock.getId());
+        verify(filmRepositoryMock, Mockito.times(1)).deleteById(toBeDeletedMock.getId());
+
+        assertEquals(2, mockRepository.size());
+        assertFalse(mockRepository.existsById(toBeDeletedMock.getId()));
     }
 
     @Test
     public void testWhenDeleteFilmButFilmNotExist_ThenThrow() {
-        Film randFilmMock = mockFilmDB.get(new Random().nextInt(movieCount));
-        when(filmRepositoryMock.existsById(Mockito.any(UUID.class))).thenReturn(false);
-
-        Exception exception = assertThrows(NoSuchElementException.class, () -> filmServiceMock.deleteFilm(randFilmMock.getId()));
+        Exception exception = assertThrows(NoSuchElementException.class,
+                () -> filmServiceMock.deleteFilm(mockUUID1));
         String expected = "Film not found";
         String actual = exception.getMessage();
 
         assertEquals(expected, actual);
 
-        verify(filmRepositoryMock, Mockito.times(1)).existsById(randFilmMock.getId());
-        verify(filmRepositoryMock, Mockito.times(0)).deleteById(randFilmMock.getId());
+        verify(filmRepositoryMock, Mockito.times(1)).existsById(mockUUID1);
+        verify(filmRepositoryMock, Mockito.times(0)).deleteById(mockUUID1);
     }
 
 }

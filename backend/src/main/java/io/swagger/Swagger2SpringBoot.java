@@ -26,7 +26,7 @@ import io.swagger.service.FilmService;
 import io.swagger.service.JsonToPojoService;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "io.swagger", "io.swagger.api" , "io.swagger.configuration"})
+@ComponentScan(basePackages = { "io.swagger", "io.swagger.api", "io.swagger.configuration" })
 public class Swagger2SpringBoot implements CommandLineRunner {
 
     private static final Logger logger = LogManager.getLogger(Swagger2SpringBoot.class);
@@ -43,14 +43,14 @@ public class Swagger2SpringBoot implements CommandLineRunner {
         ArrayList<Film> listOfFilms = jtpService.readJsonFile(jsonFilepath);
 
         // Debug modus
-        for(int i = 0; i < listOfFilms.size(); i++) {
+        for (int i = 0; i < listOfFilms.size(); i++) {
             logger.info(listOfFilms.get(i).toString());
         }
 
-        filmService.addFilms((ArrayList<Film>)listOfFilms);
+        filmService.addFilms((ArrayList<Film>) listOfFilms);
 
         logger.info("list length : ", listOfFilms.size());
-        
+
         if (arg0.length > 0 && arg0[0].equals("exitcode")) {
             throw new ExitException();
         }
@@ -59,13 +59,14 @@ public class Swagger2SpringBoot implements CommandLineRunner {
     public static void main(String[] args) throws Exception {
         new SpringApplication(Swagger2SpringBoot.class).run(args);
     }
+
     @Bean
     public Module jsonNullableModule() {
         return new JsonNullableModule();
     }
 
-  @Configuration
-  static class CustomDateConfig implements WebMvcConfigurer {
+    @Configuration
+    static class CustomDateConfig implements WebMvcConfigurer {
         @Override
         public void addFormatters(FormatterRegistry registry) {
             registry.addConverter(new LocalDateConverter("yyyy-MM-dd"));
