@@ -43,8 +43,8 @@ public class Swagger2SpringBoot implements CommandLineRunner {
         ArrayList<Film> listOfFilms = jtpService.readJsonFile(jsonFilepath);
 
         // Debug modus
-        for (int i = 0; i < listOfFilms.size(); i++) {
-            logger.info(listOfFilms.get(i).toString());
+        for (Film film: listOfFilms) {
+            logger.info(film.toString());
         }
 
         filmService.addFilms((ArrayList<Film>) listOfFilms);
