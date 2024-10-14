@@ -33,7 +33,10 @@ public class JsonToPojoService {
             e.printStackTrace();
         }
 
-        return new ArrayList<Film>(listOfFilms.stream().map(film -> new Film(film)).toList());
+        return new ArrayList<Film>(listOfFilms.stream().map(film -> {
+            String runningTime = film.getRunningTime().replaceAll("\\D+", "");
+            film.setRunningTime(runningTime);
+            return new Film(film);}).toList());
     }
 
     public static int convertTimeToMinute(String timeString) {
