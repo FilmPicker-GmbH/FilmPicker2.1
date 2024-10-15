@@ -33,7 +33,7 @@ import lombok.ToString;
         "casts"
 })
 @ToString
-public class ScrappedFilm {
+public class ScrapedFilm {
 
     @JsonProperty("wikiUrl")
     private String wikiUrl;

@@ -3,7 +3,7 @@ package io.swagger.entity;
 import java.util.UUID;
 
 import io.swagger.converter.MoodTypeConverter;
-import io.swagger.model.ScrappedFilm;
+import io.swagger.model.ScrapedFilm;
 import io.swagger.types.MoodType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -57,7 +57,7 @@ public class Film extends BaseEntity<UUID> {
      * @Column(name = "casts", nullable = false)
      * private List<Cast> casts;
      */
-    public Film(ScrappedFilm film) {
+    public Film(ScrapedFilm film) {
         this.setId(UUID.randomUUID());
         this.title = film.getName();
         this.lengthInMinutes = Integer.parseInt(film.getRunningTime());

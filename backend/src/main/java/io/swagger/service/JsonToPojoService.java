@@ -14,13 +14,13 @@ import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.swagger.entity.Film;
-import io.swagger.model.ScrappedFilm;
+import io.swagger.model.ScrapedFilm;
 
 @Service
 public class JsonToPojoService {
     public ArrayList<Film>readJsonFile(String filepath) throws StreamReadException, DatabindException, IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        ArrayList<ScrappedFilm> listOfFilms = new ArrayList<ScrappedFilm>();
+        ArrayList<ScrapedFilm> listOfFilms = new ArrayList<ScrapedFilm>();
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream("movie_data.json");
         
         if (inputStream == null) {
@@ -28,15 +28,15 @@ public class JsonToPojoService {
         }
 
         try {
-            listOfFilms = objectMapper.readValue(inputStream, new TypeReference<ArrayList<ScrappedFilm>>(){});
+            listOfFilms = objectMapper.readValue(inputStream, new TypeReference<ArrayList<ScrapedFilm>>(){});
         } catch (IOFileUploadException e) {
             e.printStackTrace();
         }
 
-        return new ArrayList<Film>(listOfFilms.stream().map(film -> {
-            String runningTime = film.getRunningTime().replaceAll("\\D+", "");
-            film.setRunningTime(runningTime);
-            return new Film(film);}).toList());
+        return new ArrayList<Film>(listOfFilms.stream().map(scrapedFilm -> {
+            String runningTime = scrapedFilm.getRunningTime().replaceAll("\\D+", "");
+            scrapedFilm.setRunningTime(runningTime);
+            return new Film(scrapedFilm);}).toList());
     }
 
     public static int convertTimeToMinute(String timeString) {
