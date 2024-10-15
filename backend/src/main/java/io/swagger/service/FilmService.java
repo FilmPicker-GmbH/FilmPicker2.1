@@ -1,13 +1,20 @@
 package io.swagger.service;
 
-import io.swagger.repository.FilmDTO;
-import io.swagger.model.Film;
-import io.swagger.repository.FilmRepository;
+import java.nio.file.NoSuchFileException;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import io.swagger.entity.Film;
+import io.swagger.repository.FilmDTO;
+import io.swagger.repository.FilmRepository;
+import jakarta.persistence.EntityExistsException;
 
 @Service
 public class FilmService {
@@ -16,62 +23,64 @@ public class FilmService {
     private FilmRepository filmRepository;
 
     // Get all films
-    public List<FilmDTO> getAllFilms() {
-        List<Film> films = filmRepository.findAll();
-        return films.stream().map(this::convertToDTO).collect(Collectors.toList());
+    public List<Film> getAllFilms() {
+        Iterable<Film> films = filmRepository.findAll();
+        return StreamSupport.stream(films.spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    public void addFilms(List<Film> films) {
+        filmRepository.saveAll(films);
     }
 
     // Get a film by ID
-    public FilmDTO getFilmById(Long id) {
-        var filmId = filmRepository.findById(id);
-        if (filmId.equals(null)) {
-            throw new RuntimeException("Film not found");
+    public Film getFilmById(UUID id) throws NoSuchFileException {
+        Optional<Film> filmId = filmRepository.findById(id);
+        if (filmId.isPresent()) {
+            return filmId.get();
         }
-        return convertToDTO(filmId);
+
+        throw new NoSuchElementException("Film not found");
     }
 
     // Add a new film
-    public FilmDTO addFilm(FilmDTO filmDTO) {
-        Film film = convertToEntity(filmDTO);
-        Film savedFilm = filmRepository.save(film);
-        return convertToDTO(savedFilm);
+    public Film addFilm(Film f) {
+        if (filmRepository.existsById(f.getId())) {
+            throw new EntityExistsException("Film already exist");
+        }
+        Film savedFilm = filmRepository.save(f);
+        return savedFilm;
     }
 
     // Update a film
-    public FilmDTO updateFilm(Long id, FilmDTO filmDTO) {
-        Film film = filmRepository.findById(id);
-        if (film == null) {
-            throw new RuntimeException("Film not found");
+    public Film updateFilm(Film film) {
+        if (!filmRepository.existsById(film.getId())) {
+            throw new NoSuchElementException("Film not found");
         }
-
-        // Update the entity with new values from the DTO
-        film.setTitle(filmDTO.title());
-        film.setMoodType(filmDTO.mood());
-        film.setLength(filmDTO.length());
-
         Film updatedFilm = filmRepository.save(film);
-        return convertToDTO(updatedFilm);
+        return updatedFilm;
     }
 
     // Delete a film
-    public void deleteFilm(Long id) {
+    public void deleteFilm(UUID id) {
         if (filmRepository.existsById(id)) {
             filmRepository.deleteById(id);
         } else {
-            throw new RuntimeException("Film not found");
+            throw new NoSuchElementException("Film not found");
         }
     }
 
     // Conversion methods between Film and FilmDTO
     private FilmDTO convertToDTO(Film film) {
-        return new FilmDTO(film.getId(), film.getTitle(), film.getLength(), film.getMoodType());
+        return new FilmDTO(film.getId(), film.getTitle(), film.getLengthInMinutes(), film.getMoodType(),
+                film.getReleaseYear());
     }
 
     private Film convertToEntity(FilmDTO filmDTO) {
         Film film = new Film();
         film.setTitle(filmDTO.title());
         film.setMoodType(filmDTO.mood());
-        film.setLength(filmDTO.length());
+        film.setLengthInMinutes(filmDTO.lengthInMinutes());
         return film;
     }
 }
