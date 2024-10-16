@@ -27,8 +27,9 @@ import jakarta.persistence.EntityExistsException;
 @ExtendWith(MockitoExtension.class)
 public class TestFilmService {
 
+    public static final String EXPECTED_EXCEPTION_MESSAGE = "Film not found";
     @InjectMocks
-    FilmService filmServiceMock;
+    FilmService testee;
 
     @Mock
     FilmRepository filmRepositoryMock;
@@ -109,7 +110,7 @@ public class TestFilmService {
         List<Film> createdListMock = createListOfFilms();
 
         //Act
-        filmServiceMock.addFilms(createdListMock);
+        testee.addFilms(createdListMock);
 
         //Assert
         verify(filmRepositoryMock, Mockito.times(1)).saveAll(createdListMock);
@@ -119,7 +120,7 @@ public class TestFilmService {
     @Test
     public void testWhenGetAllFilmsIsEmpty_ThenReturnAll() {
         //Arrange //Act
-        List<Film> filmsFromService = filmServiceMock.getAllFilms();
+        List<Film> filmsFromService = testee.getAllFilms();
 
         //Assert
         verify(filmRepositoryMock, Mockito.times(1)).findAll();
@@ -130,10 +131,10 @@ public class TestFilmService {
     public void testWhenGetAllFilmsIsNotEmpty_ThenReturnAll() {
         //Arrange
         List<Film> createdListMock = createListOfFilms();
-        filmServiceMock.addFilms(createdListMock);
+        testee.addFilms(createdListMock);
 
         //Act
-        List<Film> resultWithFilms = filmServiceMock.getAllFilms();
+        List<Film> resultWithFilms = testee.getAllFilms();
 
         //Assert
         verify(filmRepositoryMock, Mockito.times(1)).findAll();
@@ -146,10 +147,10 @@ public class TestFilmService {
     public void testWhenGetFilmById_ThenFlow() throws NoSuchFileException {
         //Arrange
         List<Film> createdListMock = createListOfFilms();
-        filmServiceMock.addFilms(createdListMock);
+        testee.addFilms(createdListMock);
 
         //Act
-        Film result = filmServiceMock.getFilmById(mockUUID1);
+        Film result = testee.getFilmById(mockUUID1);
 
         //Assert
         verify(filmRepositoryMock, Mockito.times(1)).findById(mockUUID1);
@@ -161,70 +162,69 @@ public class TestFilmService {
     public void testWhenGetFilmByIdButIDNotExist_ThenThrow() {
         //Arrange //Act
         Exception exception = assertThrows(NoSuchElementException.class,
-                () -> filmServiceMock.getFilmById(UUID.randomUUID()));
-        String expected = "Film not found";
-        String actual = exception.getMessage();
+                () -> testee.getFilmById(UUID.randomUUID()));
+        String actualExceptionMessage = exception.getMessage();
 
         //Assert
-        assertTrue(actual.contains(expected));
+        assertTrue(actualExceptionMessage.contains(EXPECTED_EXCEPTION_MESSAGE));
     }
 
     @Test
     public void testWhenAddFilm_ThenFlow() {
         //Arrange
-        Film filmMock = new Film();
-        filmMock.setId(mockUUID1);
-        filmMock.setTitle("Test: The Test");
-        filmMock.setLengthInMinutes(123);
-        filmMock.setReleaseYear("1234");
+        Film expectedFilm = new Film();
+        expectedFilm.setId(mockUUID1);
+        expectedFilm.setTitle("Test: The Test");
+        expectedFilm.setLengthInMinutes(123);
+        expectedFilm.setReleaseYear("1234");
 
         //Act
-        Film actualFilm = filmServiceMock.addFilm(filmMock);
+        Film actualFilm = testee.addFilm(expectedFilm);
 
         //Assert
-        verify(filmRepositoryMock, Mockito.times(1)).existsById(filmMock.getId());
-        verify(filmRepositoryMock, Mockito.times(1)).save(filmMock);
-        assertEquals(filmMock, actualFilm);
+        verify(filmRepositoryMock, Mockito.times(1)).existsById(expectedFilm.getId());
+        verify(filmRepositoryMock, Mockito.times(1)).save(expectedFilm);
+        assertEquals(expectedFilm, actualFilm);
         assertEquals(1, mockRepository.size());
     }
 
     @Test
     public void testWhenAddFilmAlreadyExist_ThenThrowError() {
         //Arrange
-        Film filmMock = new Film();
-        filmMock.setId(mockUUID1);
-        filmMock.setTitle("Test: The Test");
-        filmMock.setLengthInMinutes(123);
-        filmMock.setReleaseYear("1234");
+        Film expectedFilm = new Film();
+        expectedFilm.setId(mockUUID1);
+        expectedFilm.setTitle("Test: The Test");
+        expectedFilm.setLengthInMinutes(123);
+        expectedFilm.setReleaseYear("1234");
 
 
         //Act
-        filmServiceMock.addFilm(filmMock);
+        testee.addFilm(expectedFilm);
 
 
         //Assert
-        Exception exception = assertThrows(EntityExistsException.class, () -> filmServiceMock.addFilm(filmMock));
+        Exception exception = assertThrows(EntityExistsException.class, () -> testee.addFilm(expectedFilm));
         String expected = "Film already exist";
         String actual = exception.getMessage();
 
         assertEquals(expected, actual);
 
-        verify(filmRepositoryMock, Mockito.times(2)).existsById(filmMock.getId());
-        verify(filmRepositoryMock, Mockito.times(1)).save(filmMock);
+        verify(filmRepositoryMock, Mockito.times(2)).existsById(expectedFilm.getId());
+        verify(filmRepositoryMock, Mockito.times(1)).save(expectedFilm);
     }
 
     @Test
     public void testWhenUpdateFilm_ThenFlow() {
         //Arrange
         List<Film> createdListMock = createListOfFilms();
-        filmServiceMock.addFilms(createdListMock);
+        testee.addFilms(createdListMock);
 
         Film mockEditedFilm = new Film(createdListMock.get(1));
         mockEditedFilm.setReleaseYear("1999");
         mockEditedFilm.setTitle("Avenger: NaN War");
 
         //Act
-        filmServiceMock.updateFilm(mockEditedFilm);
+        testee.updateFilm(mockEditedFilm);
 
         //Assert
         verify(filmRepositoryMock, Mockito.times(1)).existsById(mockEditedFilm.getId());
@@ -232,7 +232,7 @@ public class TestFilmService {
 
         assertNotEquals(createdListMock.get(1), mockEditedFilm);
 
-        List<Film> allFilmResult = filmServiceMock.getAllFilms();
+        List<Film> allFilmResult = testee.getAllFilms();
 
         assertEquals(mockEditedFilm, allFilmResult.get(1));
     }
@@ -240,34 +240,33 @@ public class TestFilmService {
     @Test
     public void testWhenUpdateFilmButIDNotExist_ThenThrowError() {
         //Arrange
-        Film filmMock = new Film();
-        filmMock.setId(mockUUID1);
-        filmMock.setTitle("Test: The Test");
-        filmMock.setLengthInMinutes(123);
-        filmMock.setReleaseYear("1234");
+        Film editFilm = new Film();
+        editFilm.setId(mockUUID1);
+        editFilm.setTitle("Test: The Test");
+        editFilm.setLengthInMinutes(123);
+        editFilm.setReleaseYear("1234");
 
         //Act //Assert
         Exception exception = assertThrows(NoSuchElementException.class,
-                () -> filmServiceMock.updateFilm(filmMock));
-        String expected = "Film not found";
+                () -> testee.updateFilm(editFilm));
         String actual = exception.getMessage();
 
-        assertEquals(expected, actual);
+        assertEquals(EXPECTED_EXCEPTION_MESSAGE, actual);
 
-        verify(filmRepositoryMock, Mockito.times(1)).existsById(filmMock.getId());
-        verify(filmRepositoryMock, Mockito.times(0)).save(filmMock);
+        verify(filmRepositoryMock, Mockito.times(1)).existsById(editFilm.getId());
+        verify(filmRepositoryMock, Mockito.times(0)).save(editFilm);
     }
 
     @Test
     public void testWhenDeleteFilm_ThenFlow() {
         //Arrange
         List<Film> createdListMock = createListOfFilms();
-        filmServiceMock.addFilms(createdListMock);
+        testee.addFilms(createdListMock);
 
         Film toBeDeletedMock = createdListMock.get(2);
 
         //Act
-        filmServiceMock.deleteFilm(toBeDeletedMock.getId());
+        testee.deleteFilm(toBeDeletedMock.getId());
 
         //Assert
         verify(filmRepositoryMock, Mockito.times(1)).existsById(toBeDeletedMock.getId());
@@ -281,7 +280,7 @@ public class TestFilmService {
     public void testWhenDeleteFilmButFilmNotExist_ThenThrow() {
         //Arrange //Act //Assert
         Exception exception = assertThrows(NoSuchElementException.class,
-                () -> filmServiceMock.deleteFilm(mockUUID1));
+                () -> testee.deleteFilm(mockUUID1));
         String expected = "Film not found";
         String actual = exception.getMessage();
 
