@@ -81,11 +81,14 @@ class TestScrapper(unittest.TestCase):
 
     @patch('requests.get')
     def test_fetch_and_extract(self, mock_get):
+        #ARRANGE
         mock_get.return_value = self.mock_response(200, self.list_of_mixed_links)
-
         url = "https:/en.wikipedia.org/wiki/List_of_highest-grossing_films"
+
+        #ACT
         self.scraper.fetch_and_extract(url)
 
+        #ASSERT
         self.assertEqual(len(self.scraper.movie_links), 3)
 
         self.assertEqual(self.scraper.movie_links[0]['title'], 'The Broadway Melody')
@@ -97,20 +100,18 @@ class TestScrapper(unittest.TestCase):
         self.assertEqual(self.scraper.movie_links[2]['title'], 'Titanic')
         self.assertEqual(self.scraper.movie_links[2]['url'], 'https://en.wikipedia.org/wiki/Titanic_(1997_film)')
 
-        # Ensure no links without URLs or invalid movie links are extracted
         print("Test passed: Fetch and extract correctly")
 
-    
     @patch('requests.get')
     def test_check_title_exists_and_extract_table(self, mock_get):
+        #ARRANGE
         mock_get.return_value = self.mock_response(200, self.table_with_title_column)
-
         url = "https://en.wikipedia.org/wiki/Test_Page"
         wikibase = "https://en.wikipedia.org"
         keyword = "Title"
 
+        #ACT
         result = self.scraper.check_title_exists_and_extract_table(url, wikibase, keyword)
-
         expected_links = {
             'https://en.wikipedia.org/wiki/Film1',
             'https://en.wikipedia.org/wiki/Film2',
@@ -118,41 +119,43 @@ class TestScrapper(unittest.TestCase):
             'https://en.wikipedia.org/wiki/Film4'
         }
 
+        #ASSERT
         self.assertEqual(result, expected_links)
         print("Test passed: check_title_exists_and_extract_table")
 
     @patch('requests.get')
     def test_check_title_exists_no_title_column(self, mock_get):
+        #ARRANGE
         mock_get.return_value = self.mock_response(200, self.table_without_title_column)
-
         url = "https://en.wikipedia.org/wiki/Test_Page_No_Title"
         wikibase = "https://en.wikipedia.org"
         keyword = "Title"
 
+        #ACT
         result = self.scraper.check_title_exists_and_extract_table(url, wikibase, keyword)
 
+        #ASSERT
         self.assertEqual(result, set())
         print("Test passed: No title column found")
-    
 
     @patch('requests.get')
     def test_run(self, mock_get):
+        #ARRANGE
         mock_get.side_effect = [
             self.mock_response(200, self.list_of_movie_links_1),
             self.mock_response(200, self.list_of_movie_links_2)
         ]
 
+        #ACT
         self.scraper.run(self.movie_lists_urls)
 
+        #ASSERT
         self.assertEqual(len(self.scraper.movie_links), 4)  
-        print(self.scraper.movie_links[0]['title'])
         self.assertEqual(self.scraper.movie_links[0]['title'], 'Movie 1')
         self.assertEqual(self.scraper.movie_links[1]['title'], 'Movie 2')
         self.assertEqual(self.scraper.movie_links[2]['title'], 'Movie 3')
         self.assertEqual(self.scraper.movie_links[3]['title'], 'Movie 4')
-
         print("Test passed: run method extracted movie links successfully.")
-
 
 if __name__ == "__main__":
     unittest.main()
